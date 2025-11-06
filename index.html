@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Route AI - Your Personal Safety Companion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>Safe Route AI</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#dashboard" class="nav-link active">Dashboard</a>
+                <a href="#safety" class="nav-link">Safety</a>
+                <a href="#chat" class="nav-link">Sakha Chat</a>
+                <a href="#settings" class="nav-link">Settings</a>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="container">
+                <div class="hero-section">
+                    <h1>Your Personal Safety Companion</h1>
+                    <p>AI-powered route planning with real-time safety monitoring</p>
+                </div>
+
+                <!-- Route Planning Card -->
+                <div class="card route-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-route"></i> Plan Your Route</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="routeForm" class="route-form">
+                            <div class="form-group">
+                                <label for="startLocation">Starting Point</label>
+                                <input type="text" id="startLocation" placeholder="Enter your starting location" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="endLocation">Destination</label>
+                                <input type="text" id="endLocation" placeholder="Enter your destination" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="travelMode">Travel Mode</label>
+                                <select id="travelMode">
+                                    <option value="walking">Walking</option>
+                                    <option value="driving">Driving</option>
+                                    <option value="transit">Public Transit</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Find Safe Route
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Route Results -->
+                <div id="routeResults" class="card route-results hidden">
+                    <div class="card-header">
+                        <h2><i class="fas fa-map-marked-alt"></i> Recommended Route</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="route-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Travel Time: <strong id="travelTime">-</strong></span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Safety Score: <strong id="safetyScore">-</strong></span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Confidence: <strong id="routeConfidence">-</strong></span>
+                            </div>
+                        </div>
+                        <div class="route-actions">
+                            <button id="startNavigation" class="btn btn-success">
+                                <i class="fas fa-play"></i> Start Navigation
+                            </button>
+                            <button id="shareRoute" class="btn btn-secondary">
+                                <i class="fas fa-share"></i> Share Route
+                            </button>
+                        </div>
+                        
+                        <!-- Route Map -->
+                        <div id="routeMap" class="route-map" style="display: none;">
+                            <div id="map" style="height: 400px; width: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="activeRoutes">0</h3>
+                            <p>Active Routes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="safetyLevel">Normal</h3>
+                            <p>Safety Status</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="systemUptime">-</h3>
+                            <p>System Uptime</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Safety Section -->
+        <section id="safety" class="section">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-shield-alt"></i> Safety Monitoring</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="safety-status">
+                            <div class="status-indicator" id="safetyIndicator">
+                                <div class="status-circle"></div>
+                                <span id="safetyStatusText">Normal</span>
+                            </div>
+                            <div class="safety-metrics">
+                                <div class="metric">
+                                    <label>Current Safety Score</label>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="safetyProgress"></div>
+                                    </div>
+                                    <span id="safetyScoreValue">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="safety-features">
+                            <h3>Safety Features</h3>
+                            <div class="feature-list">
+                                <div class="feature-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Real-time monitoring</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-bell"></i>
+                                    <span>Anomaly detection</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    <span>Safe route optimization</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-robot"></i>
+                                    <span>AI-powered insights</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chat Section -->
+        <section id="chat" class="section">
+            <div class="container">
+                <div class="card chat-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-robot"></i> Sakha - Your AI Safety Assistant</h2>
+                        <div class="chat-status" id="chatStatus">
+                            <span class="status-dot"></span>
+                            <span>Online</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="message bot-message">
+                                    <div class="message-avatar">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="message-content">
+                                        <p>Hello! I'm Sakha, your AI safety assistant. How can I help you stay safe today?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-input-container">
+                                <form id="chatForm" class="chat-form">
+                                    <input type="text" id="chatInput" placeholder="Ask me about safety tips, routes, or emergency procedures..." required>
+                                    <button type="submit" class="btn btn-primary" title="Send message">
+                                        <i class="fas fa-paper-plane"></i>
+                                        <span class="sr-only">Send message</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="section">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-cog"></i> Settings</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="settings-grid">
+                            <div class="setting-group">
+                                <h3>Safety Preferences</h3>
+                                <div class="setting-item">
+                                    <label for="safetyThreshold">Safety Threshold</label>
+                                    <input type="range" id="safetyThreshold" min="0" max="100" value="50">
+                                    <span id="thresholdValue">50</span>
+                                </div>
+                                <div class="setting-item">
+                                    <label for="notifications">Emergency Notifications</label>
+                                    <input type="checkbox" id="notifications" checked>
+                                </div>
+                            </div>
+                            <div class="setting-group">
+                                <h3>Privacy</h3>
+                                <div class="setting-item">
+                                    <label for="locationSharing">Location Sharing</label>
+                                    <input type="checkbox" id="locationSharing" checked>
+                                </div>
+                                <div class="setting-item">
+                                    <label for="dataCollection">Data Collection</label>
+                                    <input type="checkbox" id="dataCollection" checked>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing your request...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

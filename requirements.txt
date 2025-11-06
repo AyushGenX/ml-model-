@@ -1,0 +1,23 @@
+# Core dependencies
+numpy>=1.21.0
+pandas>=1.3.0
+scikit-learn>=1.0.0
+joblib>=1.1.0
+
+# Web framework
+Flask>=2.0.0
+Flask-CORS>=3.0.0
+
+# HTTP requests
+requests>=2.25.0
+
+# Data processing
+matplotlib>=3.5.0
+
+# Optional: For advanced ML models
+# tensorflow>=2.8.0
+# torch>=1.10.0
+
+# Development and testing
+pytest>=6.0.0
+pytest-asyncio>=0.18.0

@@ -94,21 +94,27 @@ class EnhancedRouteOptimizer:
     
     def _get_mock_routes(self, start_lat: float, start_lng: float, 
                         end_lat: float, end_lng: float) -> List[Dict]:
-        """Generate mock routes for testing"""
-        # Create a simple straight-line route with some waypoints
+        """Generate mock routes for testing with realistic travel times"""
         num_waypoints = 5
         lat_step = (end_lat - start_lat) / num_waypoints
         lng_step = (end_lng - start_lng) / num_waypoints
+        average_speed_kmph = 30  # assume 30 km/h city driving
         
         steps = []
         for i in range(num_waypoints + 1):
             lat = start_lat + (lat_step * i)
             lng = start_lng + (lng_step * i)
+            end_lat_step = lat + (lat_step / 2)
+            end_lng_step = lng + (lng_step / 2)
+            
+            step_distance_m = self._calculate_distance(lat, lng, end_lat_step, end_lng_step)
+            step_duration_minutes = (step_distance_m / 1000) / average_speed_kmph * 60
+            step_duration_seconds = max(60, step_duration_minutes * 60)  # ensure at least 1 minute
             
             step = {
                 'start_location': {'lat': lat, 'lng': lng},
-                'end_location': {'lat': lat + lat_step/2, 'lng': lng + lng_step/2},
-                'duration': {'value': 300}  # 5 minutes per step
+                'end_location': {'lat': end_lat_step, 'lng': end_lng_step},
+                'duration': {'value': step_duration_seconds}
             }
             steps.append(step)
         
